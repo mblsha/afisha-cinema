@@ -61,11 +61,9 @@ public:
     QueryMainWindow();
 
 public slots:
-    void displayQuery(int index);
+    void textChanged();
 
 private:
-    QComboBox * ui_defaultQueries;
-
     void evaluate(const QString &str);
     void loadInputFile();
 };

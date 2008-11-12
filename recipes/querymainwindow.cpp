@@ -43,38 +43,23 @@
 
 #include <QtGui>
 #include <QtXmlPatterns>
+#include <QBuffer>
 
 #include "querymainwindow.h"
 
-QueryMainWindow::QueryMainWindow() : ui_defaultQueries(0)
+QueryMainWindow::QueryMainWindow()
 {
     setupUi(this);
 
-    ui_defaultQueries = qFindChild<QComboBox*>(this, "defaultQueries");
-
     QMetaObject::connectSlotsByName(this);
 
-    connect(ui_defaultQueries, SIGNAL(currentIndexChanged(int)), SLOT(displayQuery(int)));
+    connect(qFindChild<QTextEdit*>(this, "inputTextEdit"), SIGNAL(textChanged()), SLOT(textChanged()));
+    connect(qFindChild<QTextEdit*>(this, "queryTextEdit"), SIGNAL(textChanged()), SLOT(textChanged()));
 
     loadInputFile();
 
     const QStringList queries(QDir(":/files/", "*.xq").entryList());
     int len = queries.count();
-
-    for(int i = 0; i < len; ++i)
-        ui_defaultQueries->addItem(queries.at(i));
-}
-
-void QueryMainWindow::displayQuery(int index)
-{
-    QFile queryFile(QString(":files/") + ui_defaultQueries->itemText(index));
-    queryFile.open(QIODevice::ReadOnly);
-
-    const QString query(QString::fromLatin1(queryFile.readAll()));
-
-    qFindChild<QTextEdit*>(this, "queryTextEdit")->setPlainText(query);
-
-    evaluate(query);
 }
 
 void QueryMainWindow::loadInputFile()
@@ -92,6 +77,11 @@ void QueryMainWindow::loadInputFile()
     qFindChild<QTextEdit*>(this, "inputTextEdit")->setPlainText(inputDocument);
 }
 
+void QueryMainWindow::textChanged()
+{
+	evaluate(qFindChild<QTextEdit*>(this, "queryTextEdit")->toPlainText());
+}
+
 void QueryMainWindow::evaluate(const QString &str)
 {
     /* This function takes the input string and displays the
@@ -99,8 +89,8 @@ void QueryMainWindow::evaluate(const QString &str)
      */
     QXmlQuery query;
 
-    QFile sourceDocument;
-    sourceDocument.setFileName(":/files/cookbook.xml");
+    QByteArray data = qFindChild<QTextEdit*>(this, "inputTextEdit")->toPlainText().toUtf8();
+    QBuffer sourceDocument(&data);
     sourceDocument.open(QIODevice::ReadOnly);
     query.bindVariable("inputDocument", &sourceDocument);
 
@@ -120,5 +110,4 @@ void QueryMainWindow::evaluate(const QString &str)
  
     buffer.close();
     qFindChild<QTextEdit*>(this, "outputTextEdit")->setPlainText(QString::fromUtf8(outArray.constData()));
-    
 }
