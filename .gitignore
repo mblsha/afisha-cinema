@@ -1,0 +1,5 @@
+Makefile
+*.app
+/.obj
+/.moc
+/.ui
