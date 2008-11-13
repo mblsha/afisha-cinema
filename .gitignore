@@ -4,3 +4,8 @@ Makefile
 .moc
 .uic
 .rcc
+moc_*.cpp
+*.o
+*.moc
+qrc_*.cpp
+ui_*.h

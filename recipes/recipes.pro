@@ -8,3 +8,5 @@ target.path = $$[QT_INSTALL_EXAMPLES]/xmlpatterns/recipes
 sources.files = $$SOURCES $$HEADERS $$RESOURCES *.pro *.xq *.html forms files
 sources.path = $$[QT_INSTALL_EXAMPLES]/xmlpatterns/recipes
 INSTALLS += target sources
+
+include(../../psi/qa/oldtest/unittest.pri)

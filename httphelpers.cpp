@@ -5,6 +5,8 @@
 #include <QUrl>
 #include <QRegExp>
 #include <QTextCodec>
+#include <QProcess>
+#include <QtXmlPatterns>
 
 int HttpHelpers::httpGet(QHttp* http, const QString& urlString)
 {
@@ -39,4 +41,55 @@ QString HttpHelpers::ensureUnicodeHtml(const QByteArray& data)
 	}
 
 	return tmp;
+}
+
+QString HttpHelpers::htmlToXml(const QString& html)
+{
+	QProcess tidy;
+	tidy.start("tidy", QStringList() << "-asxhtml" << "-numeric" << "-utf8");
+	if (!tidy.waitForStarted()) {
+		qWarning("tidy!waitForStarted");
+		return html;
+	}
+
+	tidy.write(html.toUtf8());
+	tidy.closeWriteChannel();
+
+	if (!tidy.waitForFinished()) {
+		qWarning("tidy!waitForFinished");
+		return html;
+	}
+
+	QString result = QString::fromUtf8(tidy.readAll());
+	QRegExp xmlns("xmlns\\s*=\\s*\".+\"");
+	xmlns.setMinimal(true);
+	result.replace(xmlns, "");
+	return result;
+}
+
+QString HttpHelpers::xmlQueryResult(const QString& _query, const QString& _data)
+{
+	QXmlQuery query;
+
+	QByteArray data = _data.toUtf8();
+	QBuffer sourceDocument(&data);
+	sourceDocument.open(QIODevice::ReadOnly);
+	query.bindVariable("input", &sourceDocument);
+
+	query.setQuery(_query);
+
+	if (!query.isValid())
+		return QString();
+
+	QByteArray outArray;
+	QBuffer buffer(&outArray);
+	buffer.open(QIODevice::ReadWrite);
+
+	QXmlFormatter formatter(query, &buffer);
+
+	if (!query.evaluateTo(&formatter))
+		return QString();
+
+	buffer.close();
+	return QString::fromUtf8(outArray.constData());
 }

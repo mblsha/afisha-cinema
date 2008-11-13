@@ -92,7 +92,7 @@ void QueryMainWindow::evaluate(const QString &str)
     QByteArray data = qFindChild<QTextEdit*>(this, "inputTextEdit")->toPlainText().toUtf8();
     QBuffer sourceDocument(&data);
     sourceDocument.open(QIODevice::ReadOnly);
-    query.bindVariable("inputDocument", &sourceDocument);
+    query.bindVariable("input", &sourceDocument);
 
     query.setQuery(str);
 

@@ -6,7 +6,6 @@
 #include <QDomElement>
 #include <QUrl>
 #include <QFile>
-#include <QtXmlPatterns>
 
 #include "httphelpers.h"
 
@@ -55,8 +54,30 @@ void CinemaList::httpRequestFinished(int requestId, bool error)
 void CinemaList::initFromData(const QByteArray& data)
 {
 	QString html = HttpHelpers::ensureUnicodeHtml(data);
-	// qWarning("%s", qPrintable(html));
-	QXmlQuery query;
-	query.setQuery("a");
-	
+	html = HttpHelpers::htmlToXml(html);
+
+	QString query = "<cinemas>"
+	"{"
+	"for $file in doc($input)//table[@class = \"place\"]/tr[child::td]"
+	"return"
+	"<cinema>"
+	"<name>{fn:replace($file/td/a/text(), '\\n', '')}</name>"
+	"<id>{fn:replace($file/td/a/@href, '.*(?:&amp;|\\?)place_id=(\\d+).*', '$1')}</id>"
+	"</cinema>"
+	"}"
+	"</cinemas>";
+	QString result = HttpHelpers::xmlQueryResult(query, html);
+
+	qWarning() << result;
+
+	// <cinemas>
+	// {
+	// for $file in doc($input)//table[@class = "place"]/tr[child::td]
+	// return
+	// <cinema>
+	// <name>{fn:replace($file/td/a/text(), '\n', '')}</name>
+	// <id>{fn:replace($file/td/a/@href, '.*(?:&amp;|\?)place_id=(\d+).*', '$1')}</id>
+	// </cinema>
+	// }
+	// </cinemas>
 }
