@@ -67,7 +67,7 @@ QString HttpHelpers::htmlToXml(const QString& html)
 	return result;
 }
 
-QString HttpHelpers::xmlQueryResult(const QString& _query, const QString& _data)
+QString HttpHelpers::xmlQueryStringResult(const QString& _query, const QString& _data)
 {
 	QXmlQuery query;
 
@@ -92,4 +92,20 @@ QString HttpHelpers::xmlQueryResult(const QString& _query, const QString& _data)
 
 	buffer.close();
 	return QString::fromUtf8(outArray.constData());
+}
+
+QString HttpHelpers::xmlQueryResult(const QString& queryFileName, const QString& data)
+{
+	QFile queryFile(queryFileName);
+	if (!queryFile.open(QFile::ReadOnly))
+		return QString();
+
+	return xmlQueryStringResult(QString::fromUtf8(queryFile.readAll()), data);
+}
+
+QString HttpHelpers::xmlQueryHtmlResult(const QString& queryFileName, const QByteArray& data)
+{
+	QString html = HttpHelpers::ensureUnicodeHtml(data);
+	html = HttpHelpers::htmlToXml(html);
+	return xmlQueryResult(queryFileName, html);
 }

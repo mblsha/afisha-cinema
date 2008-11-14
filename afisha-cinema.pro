@@ -1,6 +1,7 @@
 TEMPLATE = app
 CONFIG += qt
 QT += gui network xml xmlpatterns
+RESOURCES = queries.qrc
 
 SOURCES += \
 	main.cpp \
