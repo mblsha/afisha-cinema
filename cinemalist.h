@@ -23,7 +23,7 @@ private slots:
 	void httpRequestFinished(int requestId, bool error);
 
 private:
-	QList<Cinema> cinemas_;
+	QList<Cinema*> cinemas_;
 	QHttp* http_;
 	int httpRequestId_;
 };

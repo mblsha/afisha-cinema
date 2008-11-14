@@ -6,8 +6,12 @@
 #include <QDomElement>
 #include <QUrl>
 #include <QFile>
+#include <QtAlgorithms>
+#include <QDomDocument>
+#include <QDomElement>
 
 #include "httphelpers.h"
+#include "xmpp_xmlcommon.h"
 
 CinemaList::CinemaList()
 	: QObject()
@@ -54,6 +58,28 @@ void CinemaList::httpRequestFinished(int requestId, bool error)
 void CinemaList::initFromData(const QByteArray& data)
 {
 	QString result = HttpHelpers::xmlQueryHtmlResult(":queries/cinemas.xq", data);
+	qDeleteAll(cinemas_);
+	cinemas_.clear();
 
-	qWarning() << result;
+	QDomDocument doc;
+	if (!doc.setContent(result))
+		return;
+
+	QDomElement root = doc.documentElement();
+	Q_ASSERT(root.tagName() == "cinemas");
+	if (root.tagName() != "cinemas")
+		return;
+
+	for (QDomNode n = root.firstChild(); !n.isNull(); n = n.nextSibling()) {
+		QDomElement e = n.toElement();
+		if (e.isNull())
+			continue;
+
+		if (e.tagName() == "cinema") {
+			Cinema* cinema = new Cinema();
+			cinema->initFromXml(e);
+			cinema->updateFromWeb();
+			cinemas_ << cinema;
+		}
+	}
 }

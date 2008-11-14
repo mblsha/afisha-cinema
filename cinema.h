@@ -15,11 +15,14 @@ public:
 	Cinema();
 	~Cinema();
 
-	void initFromUrl(const QString& url);
-	void initFromData(const QDomElement& element);
+	void initFromXml(const QDomElement& element);
+	void updateFromWeb();
+
+	void clear();
 
 private:
 	QString id_;
+	QString name_;
 	QString address_;
 	QString mapUrl_;
 	QStringList phones_;
