@@ -1,25 +1,19 @@
 #include "cinemalist.h"
 
 #include <QDebug>
-#include <QHttp>
 #include <QDomDocument>
 #include <QDomElement>
-#include <QUrl>
-#include <QFile>
 #include <QtAlgorithms>
 #include <QDomDocument>
 #include <QDomElement>
 
-#include "httphelpers.h"
 #include "xmpp_xmlcommon.h"
+#include "httprequest.h"
+#include "afishahelpers.h"
 
 CinemaList::CinemaList()
 	: QObject()
-	, http_(0)
-	, httpRequestId_(-1)
 {
-	http_ = new QHttp(this);
-	connect(http_, SIGNAL(requestFinished(int, bool)), this, SLOT(httpRequestFinished(int, bool)));
 }
 
 CinemaList::~CinemaList()
@@ -30,39 +24,34 @@ void CinemaList::initFromWeb()
 {
 	// QString urlString = "http://pda.afisha.yandex.ru/chooser_place.xml?type=cinema&date=2008-11-13&";
 	// httpRequestId_ = HttpHelpers::httpGet(http_, urlString);
-
-	QFile file("cache/cinemalist-cache.html");
-	if (file.open(QFile::ReadOnly)) {
-		initFromData(file.readAll());
-	}
+	if (request_)
+		delete request_;
+	request_ = new HttpRequest(QString("%1_cinemas").arg(AfishaHelpers::currentDate()), this);
+	connect(request_, SIGNAL(finished()), SLOT(requestFinished()));
+	request_->request(":queries/cinemas.xq",
+	                  QString("http://pda.afisha.yandex.ru/chooser_place.xml?type=cinema&date=%1&")
+	                  .arg(AfishaHelpers::currentDate()));
 }
 
-void CinemaList::httpRequestFinished(int requestId, bool error)
+void CinemaList::requestFinished()
 {
-	if (error) {
-		qWarning("Bah! Error!");
+	if (request_.isNull())
 		return;
+
+	if (!request_->error()) {
+		initFromData(request_->result());
 	}
 
-	if (requestId != httpRequestId_) {
-		// qWarning("requestId != httpRequestId_");
-		return;
-	}
-
-	QFile file("cache/cinemalist-cache.html");
-	if (file.open(QFile::WriteOnly)) {
-		file.write(http_->readAll());
-	}
+	delete request_;
 }
 
-void CinemaList::initFromData(const QByteArray& data)
+void CinemaList::initFromData(const QString& xml)
 {
-	QString result = HttpHelpers::xmlQueryHtmlResult(":queries/cinemas.xq", data);
 	qDeleteAll(cinemas_);
 	cinemas_.clear();
 
 	QDomDocument doc;
-	if (!doc.setContent(result))
+	if (!doc.setContent(xml))
 		return;
 
 	QDomElement root = doc.documentElement();

@@ -7,12 +7,16 @@ SOURCES += \
 	main.cpp \
 	cinema.cpp \
 	cinemalist.cpp \
-	httphelpers.cpp
+	httphelpers.cpp \
+	afishahelpers.cpp \
+	httprequest.cpp
 
 HEADERS += \
 	cinema.h \
 	cinemalist.h \
-	httphelpers.h
+	httphelpers.h \
+	afishahelpers.h \
+	httprequest.h
 
 DEFINES += NO_XMPP_STANZA
 HEADERS += \
