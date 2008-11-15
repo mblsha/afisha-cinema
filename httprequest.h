@@ -22,6 +22,7 @@ signals:
 	void finished();
 
 private slots:
+	void start();
 	void httpRequestFinished(int requestId, bool error);
 	void delayedFinished();
 
@@ -35,6 +36,7 @@ private:
 
 	QString cacheFileName() const;
 	void processData(const QByteArray& data);
+	friend class HttpRequestQueue;
 };
 
 #endif

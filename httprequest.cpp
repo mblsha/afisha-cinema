@@ -5,8 +5,80 @@
 #include <QUrl>
 #include <QFile>
 #include <QTimer>
+#include <QCoreApplication>
 
 #include "httphelpers.h"
+
+//----------------------------------------------------------------------------
+// HttpRequestQueue
+//----------------------------------------------------------------------------
+
+class HttpRequestQueue : public QObject
+{
+	Q_OBJECT
+public:
+	static HttpRequestQueue* instance()
+	{
+		static HttpRequestQueue* instance_ = 0;
+		if (!instance_) {
+			instance_ = new HttpRequestQueue();
+		}
+		return instance_;
+	}
+
+	void queue(HttpRequest* request)
+	{
+		queue_ << request;
+		connect(request, SIGNAL(destroyed(QObject*)), SLOT(requestDestroyed(QObject*)));
+		updateTimer();
+	}
+
+private slots:
+	void requestDestroyed(QObject* obj)
+	{
+		HttpRequest* request = static_cast<HttpRequest*>(obj);
+		queue_.removeAll(request);
+	}
+
+	void timeout()
+	{
+		if (queue_.isEmpty())
+			return;
+
+		HttpRequest* request = queue_.takeFirst();
+		request->start();
+		updateTimer();
+	}
+
+	void updateTimer()
+	{
+		if (queue_.isEmpty()) {
+			timer_->stop();
+			return;
+		}
+
+		if (!timer_->isActive()) {
+			timer_->start();
+		}
+	}
+
+private:
+	HttpRequestQueue()
+		: QObject(QCoreApplication::instance())
+	{
+		timer_ = new QTimer(this);
+		timer_->setSingleShot(true);
+		timer_->setInterval(1000);
+		connect(timer_, SIGNAL(timeout()), SLOT(timeout()));
+	}
+
+	QList<HttpRequest*> queue_;
+	QTimer* timer_;
+};
+
+//----------------------------------------------------------------------------
+// HttpRequest
+//----------------------------------------------------------------------------
 
 HttpRequest::HttpRequest(QString id, QObject* parent)
 	: QObject(parent)
@@ -50,6 +122,11 @@ void HttpRequest::request(const QString& queryFileName, const QString& url)
 		}
 	}
 
+	HttpRequestQueue::instance()->queue(this);
+}
+
+void HttpRequest::start()
+{
 	httpRequestId_ = HttpHelpers::httpGet(http_, url);
 }
 
@@ -101,3 +178,5 @@ void HttpRequest::processData(const QByteArray& data)
 		file.write(html.toUtf8());
 	}
 }
+
+#include "httprequest.moc"
