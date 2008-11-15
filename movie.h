@@ -6,6 +6,7 @@
 #include <QStringList>
 #include <QDateTime>
 #include <QPointer>
+#include <QMap>
 
 class QDomElement;
 class HttpRequest;
@@ -29,6 +30,7 @@ private slots:
 private:
 	QString id_;
 	QString name_;
+	QMap<QString, QStringList> cinemas_;
 	QDateTime lastUpdatedAt_;
 
 	QPointer<HttpRequest> request_;

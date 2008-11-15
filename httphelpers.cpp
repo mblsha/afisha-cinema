@@ -36,7 +36,11 @@ QString HttpHelpers::ensureUnicodeHtml(const QByteArray& data)
 	QString tmp(data);
 	QRegExp contentType("content=(?:\"|')text/html; charset=([\\w\\d-]+)(?:\"|')");
 	if (contentType.indexIn(tmp)) {
-		QTextCodec* codec = QTextCodec::codecForName(contentType.capturedTexts()[1].toLatin1());
+		QString charset = contentType.capturedTexts()[1];
+		if (charset == "utf-8" || charset.simplified().isEmpty()) {
+			return QString::fromUtf8(data);
+		}
+		QTextCodec* codec = QTextCodec::codecForName(charset.toLatin1());
 		return codec->toUnicode(data);
 	}
 
