@@ -64,7 +64,12 @@ void Cinema::initFromXml(const QDomElement& e)
 	name_ = XMLHelper::subTagText(e, "name");
 	address_ = XMLHelper::subTagText(e, "address");
 	metro_ = XMLHelper::subTagText(e, "metro");
-	qWarning() << id_ << name_ << address_ << metro_;
+	details_ = XMLHelper::subTagText(e, "details");
+
+	if (!e.attribute("detailed").isEmpty()) {
+		// if (!details_.isEmpty())
+			qWarning() << id_ << name_ << address_ << metro_;
+	}
 }
 
 void Cinema::clear()
@@ -73,6 +78,7 @@ void Cinema::clear()
 	name_ = QString();
 	address_ = QString();
 	metro_ = QString();
+	details_ = QString();
 	mapUrl_ = QString();
 	phones_ = QStringList();
 	lastUpdatedAt_ = QDateTime::currentDateTime();

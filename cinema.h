@@ -31,6 +31,7 @@ private:
 	QString name_;
 	QString address_;
 	QString metro_;
+	QString details_;
 	QString mapUrl_;
 	QStringList phones_;
 	QDateTime lastUpdatedAt_;
