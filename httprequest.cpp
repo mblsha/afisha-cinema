@@ -113,6 +113,7 @@ QString HttpRequest::result() const
 void HttpRequest::request(const QString& queryFileName, const QString& url)
 {
 	queryFileName_ = queryFileName;
+	url_ = url;
 
 	if (QFile::exists(cacheFileName())) {
 		QFile file(cacheFileName());
@@ -127,7 +128,7 @@ void HttpRequest::request(const QString& queryFileName, const QString& url)
 
 void HttpRequest::start()
 {
-	httpRequestId_ = HttpHelpers::httpGet(http_, url);
+	httpRequestId_ = HttpHelpers::httpGet(http_, url_);
 }
 
 void HttpRequest::httpRequestFinished(int requestId, bool error)

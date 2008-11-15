@@ -32,6 +32,7 @@ private:
 	QString queryFileName_;
 	QHttp* http_;
 	int httpRequestId_;
+	QString url_;
 	QString result_;
 
 	QString cacheFileName() const;

@@ -79,7 +79,7 @@ void Movie::updateFromWeb()
 	                           .arg(id_), this);
 	connect(request_, SIGNAL(finished()), SLOT(requestFinished()));
 
-	// in order to get times we should fetch with '&page=1'
+	// in order to get times even for movies with single cinema, we should fetch with '&page=1'
 	request_->request(":queries/movie.xq",
 	                  QString("http://afisha.yandex.ru/event.xml?event_id=%2&date=%1&page=1")
 	                  .arg(AfishaHelpers::currentDate())
