@@ -1,5 +1,5 @@
-#ifndef CINEMALIST_H
-#define CINEMALIST_H
+#ifndef MOVIES_H
+#define MOVIES_H
 
 #include <QObject>
 
@@ -7,14 +7,14 @@
 #include <QPointer>
 
 class HttpRequest;
-class Cinema;
+class Movie;
 
-class CinemaList : public QObject
+class Movies : public QObject
 {
 	Q_OBJECT
 public:
-	CinemaList();
-	~CinemaList();
+	Movies();
+	~Movies();
 
 	void initFromWeb();
 	void initFromData(const QString& xml);
@@ -23,7 +23,7 @@ private slots:
 	void requestFinished();
 
 private:
-	QList<Cinema*> cinemas_;
+	QList<Movie*> movies_;
 	QPointer<HttpRequest> request_;
 };
 

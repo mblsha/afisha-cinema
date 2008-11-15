@@ -9,14 +9,18 @@ SOURCES += \
 	cinemalist.cpp \
 	httphelpers.cpp \
 	afishahelpers.cpp \
-	httprequest.cpp
+	httprequest.cpp \
+	movie.cpp \
+	movies.cpp
 
 HEADERS += \
 	cinema.h \
 	cinemalist.h \
 	httphelpers.h \
 	afishahelpers.h \
-	httprequest.h
+	httprequest.h \
+	movie.h \
+	movies.h
 
 DEFINES += NO_XMPP_STANZA
 HEADERS += \

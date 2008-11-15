@@ -27,7 +27,7 @@ void Cinema::updateFromWeb()
 	                           .arg(id_), this);
 	connect(request_, SIGNAL(finished()), SLOT(requestFinished()));
 	request_->request(":queries/cinema.xq",
-	                  QString("%1/place.xml?type=cinema&date=%2&place_id=%3&")
+	                  QString("%1/place.xml?city=MSK&type=cinema&date=%2&place_id=%3&")
 	                  .arg(AfishaHelpers::host())
 	                  .arg(AfishaHelpers::currentDate())
 	                  .arg(id_));

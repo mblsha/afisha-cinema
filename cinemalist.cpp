@@ -1,8 +1,6 @@
 #include "cinemalist.h"
 
 #include <QDebug>
-#include <QDomDocument>
-#include <QDomElement>
 #include <QtAlgorithms>
 #include <QDomDocument>
 #include <QDomElement>
@@ -10,6 +8,7 @@
 #include "xmpp_xmlcommon.h"
 #include "httprequest.h"
 #include "afishahelpers.h"
+#include "cinema.h"
 
 CinemaList::CinemaList()
 	: QObject()
@@ -27,7 +26,7 @@ void CinemaList::initFromWeb()
 	request_ = new HttpRequest(QString("%1_cinemas").arg(AfishaHelpers::currentDate()), this);
 	connect(request_, SIGNAL(finished()), SLOT(requestFinished()));
 	request_->request(":queries/cinemas.xq",
-	                  QString("%1/chooser_place.xml?type=cinema&date=%2&")
+	                  QString("%1/chooser_place.xml?city=MSK&type=cinema&date=%2&")
 	                  .arg(AfishaHelpers::host())
 	                  .arg(AfishaHelpers::currentDate()));
 }
