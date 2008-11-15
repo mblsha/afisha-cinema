@@ -5,8 +5,10 @@
 #include <QString>
 #include <QStringList>
 #include <QDateTime>
+#include <QPointer>
 
 class QDomElement;
+class HttpRequest;
 
 class Cinema : public QObject
 {
@@ -15,18 +17,25 @@ public:
 	Cinema();
 	~Cinema();
 
+	void initFromData(const QString& xml);
 	void initFromXml(const QDomElement& element);
 	void updateFromWeb();
 
 	void clear();
 
+private slots:
+	void requestFinished();
+
 private:
 	QString id_;
 	QString name_;
 	QString address_;
+	QString metro_;
 	QString mapUrl_;
 	QStringList phones_;
 	QDateTime lastUpdatedAt_;
+
+	QPointer<HttpRequest> request_;
 };
 
 #endif

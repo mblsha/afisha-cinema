@@ -10,6 +10,6 @@ int main (int argc, char *argv[])
 	CinemaList cinemaList;
 	cinemaList.initFromWeb();
 
-	// QTimer::singleShot(0, &app, SLOT(quit()));
+	// QTimer::singleShot(1000, &app, SLOT(quit()));
 	return app.exec();
 }

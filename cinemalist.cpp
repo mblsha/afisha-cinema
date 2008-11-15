@@ -22,14 +22,13 @@ CinemaList::~CinemaList()
 
 void CinemaList::initFromWeb()
 {
-	// QString urlString = "http://pda.afisha.yandex.ru/chooser_place.xml?type=cinema&date=2008-11-13&";
-	// httpRequestId_ = HttpHelpers::httpGet(http_, urlString);
 	if (request_)
 		delete request_;
 	request_ = new HttpRequest(QString("%1_cinemas").arg(AfishaHelpers::currentDate()), this);
 	connect(request_, SIGNAL(finished()), SLOT(requestFinished()));
 	request_->request(":queries/cinemas.xq",
-	                  QString("http://pda.afisha.yandex.ru/chooser_place.xml?type=cinema&date=%1&")
+	                  QString("%1/chooser_place.xml?type=cinema&date=%2&")
+	                  .arg(AfishaHelpers::host())
 	                  .arg(AfishaHelpers::currentDate()));
 }
 

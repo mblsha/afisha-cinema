@@ -1,5 +1,6 @@
 #include "httprequest.h"
 
+#include <QDebug>
 #include <QHttp>
 #include <QUrl>
 #include <QFile>
@@ -91,4 +92,12 @@ void HttpRequest::processData(const QByteArray& data)
 {
 	result_ = HttpHelpers::xmlQueryHtmlResult(queryFileName_, data);
 	QTimer::singleShot(0, this, SLOT(delayedFinished()));
+
+	QFile file(QString("cache/%1.xml").arg(id_));
+	if (file.open(QFile::WriteOnly)) {
+		QString html = HttpHelpers::ensureUnicodeHtml(data);
+		html = HttpHelpers::htmlToXml(html);
+
+		file.write(html.toUtf8());
+	}
 }

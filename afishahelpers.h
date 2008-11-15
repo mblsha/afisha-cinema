@@ -4,6 +4,7 @@
 #include <QString>
 
 namespace AfishaHelpers {
+	QString host();
 	QString currentDate();
 };
 
