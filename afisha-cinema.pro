@@ -17,7 +17,8 @@ SOURCES += \
 	movies.cpp \
 	mainwindow.cpp \
 	yamapsapi.cpp \
-	geocoder.cpp
+	geocoder.cpp \
+	yamap.cpp
 
 HEADERS += \
 	cinema.h \
@@ -29,7 +30,8 @@ HEADERS += \
 	movies.h \
 	mainwindow.h \
 	yamapsapi.h \
-	geocoder.h
+	geocoder.h \
+	yamap.h
 
 DEFINES += NO_XMPP_STANZA
 HEADERS += \

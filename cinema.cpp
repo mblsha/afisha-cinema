@@ -38,6 +38,11 @@ QString Cinema::metro() const
 	return metro_;
 }
 
+QString Cinema::ll() const
+{
+	return ll_;
+}
+
 void Cinema::updateFromWeb()
 {
 	Q_ASSERT(!id_.isEmpty());

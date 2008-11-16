@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Карта</title>
+
+	<script charset="utf-8" type="text/javascript" src="http://api-maps.yandex.ru/1.0/?key=ALA-HEkBAAAAWA7dRQMA1tU9drgY14m-mw5ZOdnrjLKyLIwAAAAAAAAAAACEbj_BEO_HXptK6butt69Bqhhowg=="></script>
+
+	<script type="text/javascript"><!--
+	var map;
+	var ml;
+	function initMap() {
+		map = new YMaps.Map(document.getElementById("YMapsID"));
+		map.addControl(new YMaps.TypeControl());
+		map.addControl(new YMaps.ToolBar());
+		map.addControl(new YMaps.Zoom());
+		map.addControl(new YMaps.ScaleLine());
+	}
+
+	function init(long, lat) {
+		map.setCenter(new YMaps.GeoPoint(long, lat), 16);
+		map.setZoom(12);
+
+		// ml = new YMaps.YMapsML( 'http://company.yandex.ru/inside/address.xml' );
+		// map.addOverlay(ml);
+
+		// YMaps.Events.observe(ml, ml.Events.Fault, function (error) {
+		//     alert('Ошибка' + error);
+		// });
+	};
+
+	function clearPlaces() {
+	}
+
+	function addPlace(long, lat, text) {
+		var point = new YMaps.GeoPoint(long, lat);
+		var placemark = new YMaps.Placemark(point);
+		placemark.description = text;
+		map.addOverlay(placemark);
+	}
+	//--></script>
+</head>
+<body>
+	<div id="YMapsID" style="height:500px; width:100%;"></div>
+
+	<script type="text/javascript"><!--
+	initMap();
+	init('37.609281', '55.753635');
+	addPlace('37.678514', '55.758255', 'Пыщ пыщ риальни');
+	// init('37.678514', '55.758255');
+	//--></script>
+</body>
+</html>

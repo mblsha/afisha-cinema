@@ -65,11 +65,12 @@
     </widget>
    </item>
    <item row="2" column="0" colspan="3" >
-    <widget class="QWebView" name="webView" >
-     <property name="url" >
-      <url>
-       <string>about:blank</string>
-      </url>
+    <widget class="YaMap" native="1" name="webView" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>
@@ -77,9 +78,10 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>YaMap</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>yamap.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

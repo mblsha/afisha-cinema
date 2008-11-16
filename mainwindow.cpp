@@ -4,6 +4,7 @@
 #include <QListWidgetItem>
 #include <QMap>
 #include <QMapIterator>
+#include <QTimer>
 
 #include "cinemalist.h"
 #include "movies.h"
@@ -20,7 +21,8 @@ MainWindow::MainWindow()
 	connect(ui_.cinemas, SIGNAL(itemSelectionChanged()), SLOT(cinemasSelectionChanged()));
 
 	cinemas_ = new CinemaList();
-	cinemas_->initFromWeb();
+	QTimer::singleShot(100, cinemas_, SLOT(initFromWeb()));
+	// cinemas_->initFromWeb();
 
 	movies_ = new Movies();
 	connect(movies_, SIGNAL(dataChanged()), SLOT(moviesChanged()));
@@ -116,4 +118,11 @@ void MainWindow::timesSelectionChanged()
 
 void MainWindow::cinemasSelectionChanged()
 {
+	ui_.webView->clearPlaces();
+	foreach(QListWidgetItem* item, ui_.cinemas->selectedItems()) {
+		Cinema* cinema = cinemas_->findCinema(item->data(Qt::UserRole).toString());
+		if (cinema) {
+			ui_.webView->addPlace(cinema->ll(), cinema->name());
+		}
+	}
 }

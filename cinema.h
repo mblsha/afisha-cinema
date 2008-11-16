@@ -21,6 +21,7 @@ public:
 	QString id() const;
 	QString address() const;
 	QString metro() const;
+	QString ll() const;
 
 	void initFromData(const QString& xml);
 	void initFromXml(const QDomElement& element);

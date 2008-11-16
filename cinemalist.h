@@ -18,6 +18,7 @@ public:
 
 	Cinema* findCinema(const QString& id) const;
 
+public slots:
 	void initFromWeb();
 	void initFromData(const QString& xml);
 
