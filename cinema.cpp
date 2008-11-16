@@ -7,6 +7,7 @@
 #include "xmpp_xmlcommon.h"
 #include "httprequest.h"
 #include "afishahelpers.h"
+#include "geocoder.h"
 
 Cinema::Cinema()
 	: QObject()
@@ -43,13 +44,14 @@ void Cinema::updateFromWeb()
 	if (request_)
 		delete request_;
 	request_ = new HttpRequest(QString("%1_cinema_%2")
-	                           .arg(AfishaHelpers::currentDate())
+	                           .arg(AfishaHelpers::cinemaCacheDate())
 	                           .arg(id_), this);
+	request_->setType("cinema_details");
 	connect(request_, SIGNAL(finished()), SLOT(requestFinished()));
 	request_->request(":queries/cinema.xq",
 	                  QString("%1/place.xml?city=MSK&type=cinema&date=%2&place_id=%3&")
 	                  .arg(AfishaHelpers::host())
-	                  .arg(AfishaHelpers::currentDate())
+	                  .arg(AfishaHelpers::cinemaCacheDate())
 	                  .arg(id_));
 }
 
@@ -60,10 +62,19 @@ void Cinema::requestFinished()
 	}
 
 	if (!request_->error()) {
-		initFromData(request_->result());
-	}
+		if (request_->type() == "cinema_details") {
+			QString xml = request_->result();
+			delete request_;
 
-	delete request_;
+			initFromData(xml);
+		}
+		else if (request_->type() == "geocoder") {
+			Geocoder* geocoder = dynamic_cast<Geocoder*>(request_.data());
+			if (geocoder) {
+				ll_ = geocoder->ll();
+			}
+		}
+	}
 }
 
 void Cinema::initFromData(const QString& xml)
@@ -87,6 +98,14 @@ void Cinema::initFromXml(const QDomElement& e)
 	details_ = XMLHelper::subTagText(e, "details");
 
 	if (!e.attribute("detailed").isEmpty()) {
+		if (!address_.isEmpty() /*&& id_ == "2825"*/) {
+			Geocoder* geocoder = new Geocoder(QString("%1_geocoder_%2")
+			                                  .arg(AfishaHelpers::cinemaCacheDate())
+			                                  .arg(id_), this);
+			request_ = geocoder;
+			connect(geocoder, SIGNAL(finished()), SLOT(requestFinished()));
+			geocoder->request(address_);
+		}
 		// if (!details_.isEmpty())
 			// qWarning() << id_ << name_ << address_ << metro_;
 	}
@@ -99,6 +118,7 @@ void Cinema::clear()
 	address_ = QString();
 	metro_ = QString();
 	details_ = QString();
+	ll_ = QString();
 	mapUrl_ = QString();
 	phones_ = QStringList();
 	lastUpdatedAt_ = QDateTime::currentDateTime();

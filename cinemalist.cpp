@@ -32,12 +32,12 @@ void CinemaList::initFromWeb()
 {
 	if (request_)
 		delete request_;
-	request_ = new HttpRequest(QString("%1_cinemas").arg(AfishaHelpers::currentDate()), this);
+	request_ = new HttpRequest(QString("%1_cinemas").arg(AfishaHelpers::cinemaCacheDate()), this);
 	connect(request_, SIGNAL(finished()), SLOT(requestFinished()));
 	request_->request(":queries/cinemas.xq",
 	                  QString("%1/chooser_place.xml?city=MSK&type=cinema&date=%2&")
 	                  .arg(AfishaHelpers::host())
-	                  .arg(AfishaHelpers::currentDate()));
+	                  .arg(AfishaHelpers::cinemaCacheDate()));
 }
 
 void CinemaList::requestFinished()

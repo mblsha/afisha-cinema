@@ -4,5 +4,6 @@
 	<file>queries/cinema.xq</file>
 	<file>queries/movies.xq</file>
 	<file>queries/movie.xq</file>
+	<file>queries/geocoder.xq</file>
 </qresource>
 </RCC>

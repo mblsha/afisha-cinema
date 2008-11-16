@@ -130,8 +130,8 @@ void Movie::initFromXml(const QDomElement& e)
 		// }
 	}
 	else {
-		qWarning() << id_ << name_;
-		qWarning() << cinemas_;
+		// qWarning() << id_ << name_;
+		// qWarning() << cinemas_;
 	}
 
 	emit dataChanged();

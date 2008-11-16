@@ -12,6 +12,9 @@ public:
 	HttpRequest(QString id, QObject* parent = 0);
 	~HttpRequest();
 
+	QString type() const;
+	void setType(const QString& type);
+
 	QString id() const;
 	bool error() const;
 	QString result() const;
@@ -22,12 +25,15 @@ signals:
 	void finished();
 
 private slots:
-	void start();
+	virtual void start();
 	void httpRequestFinished(int requestId, bool error);
-	void delayedFinished();
+
+protected slots:
+	virtual void delayedFinished();
 
 private:
 	QString id_;
+	QString type_;
 	bool error_;
 	QString queryFileName_;
 	QHttp* http_;

@@ -95,6 +95,16 @@ HttpRequest::~HttpRequest()
 {
 }
 
+QString HttpRequest::type() const
+{
+	return type_;
+}
+
+void HttpRequest::setType(const QString& type)
+{
+	type_ = type;
+}
+
 QString HttpRequest::id() const
 {
 	return id_;
@@ -128,6 +138,8 @@ void HttpRequest::request(const QString& queryFileName, const QString& url)
 
 void HttpRequest::start()
 {
+	qWarning("whoops, unable to fetch from cache: %s", qPrintable(cacheFileName()));
+	qWarning("url = '%s'", qPrintable(url_));
 	httpRequestId_ = HttpHelpers::httpGet(http_, url_);
 }
 

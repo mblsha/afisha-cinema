@@ -33,12 +33,12 @@ int HttpHelpers::httpGet(QHttp* http, const QString& urlString)
 
 QString HttpHelpers::ensureUnicodeHtml(const QByteArray& data)
 {
-	QString tmp(data);
+	QString tmp = QString::fromUtf8(data);
 	QRegExp contentType("content=(?:\"|')text/html; charset=([\\w\\d-]+)(?:\"|')");
-	if (contentType.indexIn(tmp)) {
+	if (contentType.indexIn(tmp) != -1) {
 		QString charset = contentType.capturedTexts()[1];
 		if (charset == "utf-8" || charset.simplified().isEmpty()) {
-			return QString::fromUtf8(data);
+			return tmp;
 		}
 		QTextCodec* codec = QTextCodec::codecForName(charset.toLatin1());
 		return codec->toUnicode(data);
@@ -49,22 +49,27 @@ QString HttpHelpers::ensureUnicodeHtml(const QByteArray& data)
 
 QString HttpHelpers::htmlToXml(const QString& html)
 {
-	QProcess tidy;
-	tidy.start("tidy", QStringList() << "-asxhtml" << "-numeric" << "-utf8");
-	if (!tidy.waitForStarted()) {
-		qWarning("tidy!waitForStarted");
-		return html;
+	QRegExp xml("<\\?xml.+\\?>");
+	QString result = html;
+	if (xml.indexIn(html) == -1) {
+		QProcess tidy;
+		tidy.start("tidy", QStringList() << "-asxhtml" << "-numeric" << "-utf8");
+		if (!tidy.waitForStarted()) {
+			qWarning("tidy!waitForStarted");
+			return html;
+		}
+
+		tidy.write(html.toUtf8());
+		tidy.closeWriteChannel();
+
+		if (!tidy.waitForFinished()) {
+			qWarning("tidy!waitForFinished");
+			return html;
+		}
+
+		result = QString::fromUtf8(tidy.readAll());
 	}
 
-	tidy.write(html.toUtf8());
-	tidy.closeWriteChannel();
-
-	if (!tidy.waitForFinished()) {
-		qWarning("tidy!waitForFinished");
-		return html;
-	}
-
-	QString result = QString::fromUtf8(tidy.readAll());
 	QRegExp xmlns("xmlns\\s*=\\s*\".+\"");
 	xmlns.setMinimal(true);
 	result.replace(xmlns, "");
