@@ -1,7 +1,10 @@
 TEMPLATE = app
 CONFIG += qt
-QT += gui network xml xmlpatterns
+QT += gui network xml xmlpatterns webkit
 RESOURCES = queries.qrc
+
+INTERFACES += \
+	mainwindow.ui
 
 SOURCES += \
 	main.cpp \
@@ -11,7 +14,8 @@ SOURCES += \
 	afishahelpers.cpp \
 	httprequest.cpp \
 	movie.cpp \
-	movies.cpp
+	movies.cpp \
+	mainwindow.cpp
 
 HEADERS += \
 	cinema.h \
@@ -20,7 +24,8 @@ HEADERS += \
 	afishahelpers.h \
 	httprequest.h \
 	movie.h \
-	movies.h
+	movies.h \
+	mainwindow.h
 
 DEFINES += NO_XMPP_STANZA
 HEADERS += \

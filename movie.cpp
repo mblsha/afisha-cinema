@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QDomElement>
 #include <QDomDocument>
+#include <QMapIterator>
 
 #include "xmpp_xmlcommon.h"
 #include "httprequest.h"
@@ -15,6 +16,71 @@ Movie::Movie()
 
 Movie::~Movie()
 {
+}
+
+QString Movie::name() const
+{
+	return name_;
+}
+
+QString Movie::id() const
+{
+	return id_;
+}
+
+QStringList Movie::sortTimes(const QStringList& times) const
+{
+	QStringList result = times;
+	result.sort();
+
+	QStringList tmp;
+	foreach(QString t, result) {
+		QStringList tt = t.split(":");
+		int hour = tt[0].toInt();
+		if (hour <= 6)
+			tmp += t;
+	}
+	foreach(QString t, tmp) {
+		result.removeAll(t);
+	}
+
+	result += tmp;
+	return result;
+}
+
+QStringList Movie::times() const
+{
+	QStringList result;
+	QMapIterator<QString, QStringList> it(cinemas_);
+	while (it.hasNext()) {
+		it.next();
+		foreach(QString t, it.value()) {
+			if (!result.contains(t))
+				result << t;
+		}
+	}
+	return sortTimes(result);
+}
+
+QMap<QString, QStringList> Movie::cinemasForTimes(const QStringList& _times)
+{
+	QStringList times = sortTimes(_times);
+	QMap<QString, QStringList> result;
+
+	QMapIterator<QString, QStringList> it(cinemas_);
+	while (it.hasNext()) {
+		it.next();
+		foreach(QString t, it.value()) {
+			if (times.contains(t)) {
+				if (result.contains(it.key()))
+					result[it.key()] += t;
+				else
+					result[it.key()] = QStringList() << t;
+			}
+		}
+	}
+
+	return result;
 }
 
 void Movie::initFromData(const QString& xml)
@@ -59,14 +125,16 @@ void Movie::initFromXml(const QDomElement& e)
 	}
 
 	if (e.attribute("detailed").isEmpty()) {
-		if (id_ == "190306" || id_ == "171644" || id_ == "181518") {
-			updateFromWeb();
-		}
+		// if (id_ == "190306" || id_ == "171644" || id_ == "181518") {
+		// 	updateFromWeb();
+		// }
 	}
 	else {
 		qWarning() << id_ << name_;
 		qWarning() << cinemas_;
 	}
+
+	emit dataChanged();
 }
 
 void Movie::updateFromWeb()

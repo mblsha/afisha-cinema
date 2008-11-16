@@ -69,4 +69,6 @@ void CinemaList::initFromData(const QString& xml)
 			cinemas_ << cinema;
 		}
 	}
+
+	emit dataChanged();
 }

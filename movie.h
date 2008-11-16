@@ -18,11 +18,20 @@ public:
 	Movie();
 	~Movie();
 
+	QString name() const;
+	QString id() const;
+
+	QStringList times() const;
+	QMap<QString, QStringList> cinemasForTimes(const QStringList& times);
+
 	void initFromData(const QString& xml);
 	void initFromXml(const QDomElement& element);
 	void updateFromWeb();
 
 	void clear();
+
+signals:
+	void dataChanged();
 
 private slots:
 	void requestFinished();
@@ -34,6 +43,8 @@ private:
 	QDateTime lastUpdatedAt_;
 
 	QPointer<HttpRequest> request_;
+
+	QStringList sortTimes(const QStringList& times) const;
 };
 
 #endif

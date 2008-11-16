@@ -19,6 +19,9 @@ public:
 	void initFromWeb();
 	void initFromData(const QString& xml);
 
+signals:
+	void dataChanged();
+
 private slots:
 	void requestFinished();
 

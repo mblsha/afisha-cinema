@@ -19,6 +19,20 @@ Movies::~Movies()
 {
 }
 
+QList<Movie*> Movies::movies() const
+{
+	return movies_;
+}
+
+Movie* Movies::findMovie(const QString& id) const
+{
+	foreach(Movie* movie, movies_) {
+		if (movie->id() == id)
+			return movie;
+	}
+	return 0;
+}
+
 void Movies::initFromWeb()
 {
 	if (request_)
@@ -57,6 +71,8 @@ void Movies::initFromData(const QString& xml)
 			movies_ << movie;
 		}
 	}
+
+	emit dataChanged();
 }
 
 void Movies::requestFinished()

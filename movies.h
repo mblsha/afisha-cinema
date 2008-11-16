@@ -16,8 +16,14 @@ public:
 	Movies();
 	~Movies();
 
+	QList<Movie*> movies() const;
+	Movie* findMovie(const QString& id) const;
+
 	void initFromWeb();
 	void initFromData(const QString& xml);
+
+signals:
+	void dataChanged();
 
 private slots:
 	void requestFinished();
