@@ -19,6 +19,15 @@ CinemaList::~CinemaList()
 {
 }
 
+Cinema* CinemaList::findCinema(const QString& id) const
+{
+	foreach(Cinema* cinema, cinemas_) {
+		if (cinema->id() == id)
+			return cinema;
+	}
+	return 0;
+}
+
 void CinemaList::initFromWeb()
 {
 	if (request_)

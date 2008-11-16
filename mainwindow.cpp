@@ -19,6 +19,9 @@ MainWindow::MainWindow()
 	connect(ui_.times, SIGNAL(itemSelectionChanged()), SLOT(timesSelectionChanged()));
 	connect(ui_.cinemas, SIGNAL(itemSelectionChanged()), SLOT(cinemasSelectionChanged()));
 
+	cinemas_ = new CinemaList();
+	cinemas_->initFromWeb();
+
 	movies_ = new Movies();
 	connect(movies_, SIGNAL(dataChanged()), SLOT(moviesChanged()));
 	movies_->initFromWeb();
@@ -26,6 +29,8 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+	delete cinemas_;
+	delete movies_;
 }
 
 void MainWindow::moviesChanged()
@@ -93,9 +98,16 @@ void MainWindow::timesSelectionChanged()
 		while (it.hasNext()) {
 			it.next();
 
+			Cinema* cinema = cinemas_->findCinema(it.key());
+			if (!cinema) {
+				qWarning("Cinema not found: '%s'", qPrintable(it.key()));
+				continue;
+			}
+
+			Q_ASSERT(cinema);
 			QListWidgetItem* item = new QListWidgetItem(ui_.cinemas);
-			item->setText(it.key());
-			item->setData(Qt::UserRole, it.key());
+			item->setText(cinema->name());
+			item->setData(Qt::UserRole, cinema->id());
 		}
 	}
 

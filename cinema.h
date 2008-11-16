@@ -17,6 +17,11 @@ public:
 	Cinema();
 	~Cinema();
 
+	QString name() const;
+	QString id() const;
+	QString address() const;
+	QString metro() const;
+
 	void initFromData(const QString& xml);
 	void initFromXml(const QDomElement& element);
 	void updateFromWeb();

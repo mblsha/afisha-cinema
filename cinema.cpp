@@ -17,6 +17,26 @@ Cinema::~Cinema()
 {
 }
 
+QString Cinema::name() const
+{
+	return name_;
+}
+
+QString Cinema::id() const
+{
+	return id_;
+}
+
+QString Cinema::address() const
+{
+	return address_;
+}
+
+QString Cinema::metro() const
+{
+	return metro_;
+}
+
 void Cinema::updateFromWeb()
 {
 	Q_ASSERT(!id_.isEmpty());
@@ -68,7 +88,7 @@ void Cinema::initFromXml(const QDomElement& e)
 
 	if (!e.attribute("detailed").isEmpty()) {
 		// if (!details_.isEmpty())
-			qWarning() << id_ << name_ << address_ << metro_;
+			// qWarning() << id_ << name_ << address_ << metro_;
 	}
 }
 

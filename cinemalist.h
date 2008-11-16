@@ -16,6 +16,8 @@ public:
 	CinemaList();
 	~CinemaList();
 
+	Cinema* findCinema(const QString& id) const;
+
 	void initFromWeb();
 	void initFromData(const QString& xml);
 
