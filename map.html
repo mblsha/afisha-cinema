@@ -7,6 +7,28 @@
 
 	<script charset="utf-8" type="text/javascript" src="http://api-maps.yandex.ru/1.0/?key=ALA-HEkBAAAAWA7dRQMA1tU9drgY14m-mw5ZOdnrjLKyLIwAAAAAAAAAAACEbj_BEO_HXptK6butt69Bqhhowg=="></script>
 
+	<style>
+	html {height:100%;width:100%}
+	body {height:100%;width:100%;margin:0;padding:0}
+	#YMapsID {height:100%;width:100%}
+
+	.YMaps-b-balloon-content ul {
+		padding:0 0 5px 15px;
+	}
+	.YMaps-b-balloon-content p img, .YMaps-b-balloon-content p img {
+		float:left; 
+		padding:0 5px 5px 0;
+	}
+
+	.YMaps-b-balloon-content p {
+		padding:5px 0;
+	}
+
+	.clear {
+		clear:both;
+	}
+	</style>
+
 	<script type="text/javascript"><!--
 	var map;
 	var places = new Array();
@@ -37,17 +59,17 @@
 		map.addOverlay(placemark);
 		places.push(placemark);
 	}
+
+	window.onload = function onLoad() {
+		initMap();
+		init('37.609281', '55.753635');
+		// addPlace('37.678514', '55.758255', ':-)');
+		// clearPlaces();
+		// init('37.678514', '55.758255');
+	}
 	//--></script>
 </head>
 <body>
-	<div id="YMapsID" style="height:500px; width:100%;"></div>
-
-	<script type="text/javascript"><!--
-	initMap();
-	init('37.609281', '55.753635');
-	// addPlace('37.678514', '55.758255', ':-)');
-	// clearPlaces();
-	// init('37.678514', '55.758255');
-	//--></script>
+	<div id="YMapsID"></div>
 </body>
 </html>
