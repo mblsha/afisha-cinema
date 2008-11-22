@@ -76,8 +76,13 @@ void MainWindow::moviesSelectionChanged()
 	if (ui_.movies->currentItem()) {
 		movie_ = movies_->findMovie(ui_.movies->currentItem()->data(Qt::UserRole).toString());
 		if (movie_) {
-			connect(movie_, SIGNAL(dataChanged()), SLOT(movieChanged()));
-			movie_->updateFromWeb();
+			if (movie_->times().isEmpty()) {
+				connect(movie_, SIGNAL(dataChanged()), SLOT(movieChanged()));
+				movie_->updateFromWeb();
+			}
+			else {
+				movieChanged();
+			}
 		}
 	}
 

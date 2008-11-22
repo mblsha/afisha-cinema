@@ -11,12 +11,18 @@
 int HttpHelpers::httpGet(QHttp* http, const QString& urlString)
 {
 	QUrl url(urlString, QUrl::TolerantMode);
-	Q_ASSERT(url.hasQuery());
+	// Q_ASSERT(url.hasQuery());
 
 	QString query = url.encodedQuery();
 	query.replace("?", "&"); // FIXME: Bug in Qt 4.4.2?
 
-	QHttpRequestHeader header("GET", url.path() + "?" + query);
+	QString fullUri = url.path();
+	if (!query.isEmpty()) {
+		fullUri += "?" + query;
+	}
+
+	qWarning("fullUri = '%s'", qPrintable(fullUri));
+	QHttpRequestHeader header("GET", fullUri);
 	header.setValue("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_5; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1");
 	header.setValue("Host", url.port() == -1 ? url.host() : QString("%1:%2").arg(url.host(), url.port()));
 	header.setValue("Accept-Language", "en-us");
@@ -34,7 +40,7 @@ int HttpHelpers::httpGet(QHttp* http, const QString& urlString)
 QString HttpHelpers::ensureUnicodeHtml(const QByteArray& data)
 {
 	QString tmp = QString::fromUtf8(data);
-	QRegExp contentType("content=(?:\"|')text/html; charset=([\\w\\d-]+)(?:\"|')");
+	QRegExp contentType("content=(?:\"|')text/html;? charset=([\\w\\d-]+)(?:\"|')");
 	if (contentType.indexIn(tmp) != -1) {
 		QString charset = contentType.capturedTexts()[1];
 		if (charset == "utf-8" || charset.simplified().isEmpty()) {
@@ -50,8 +56,17 @@ QString HttpHelpers::ensureUnicodeHtml(const QByteArray& data)
 QString HttpHelpers::htmlToXml(const QString& html)
 {
 	QRegExp xml("<\\?xml.+\\?>");
+	// QRegExp xhtml("W3C\\/\\/DTD XHTML"); // afisha's xhtml is not valid xhtml
 	QString result = html;
-	if (xml.indexIn(html) == -1) {
+	if (xml.indexIn(html) == -1 /*&& xhtml.indexIn(html) == -1*/) {
+		// bacek@:
+		// $ xmllint |grep html
+		//     --htmlout : output results as HTML
+		//     --html : use the HTML parser
+		//     --xmlout : force to use the XML serializer when using --html
+		//
+		// В API что-то вроде xmlBlahBlahRecover.
+
 		QProcess tidy;
 		tidy.start("tidy", QStringList() << "-asxhtml" << "-numeric" << "-utf8");
 		if (!tidy.waitForStarted()) {

@@ -3,6 +3,7 @@
 	<file>queries/cinemas.xq</file>
 	<file>queries/cinema.xq</file>
 	<file>queries/movies.xq</file>
+	<file>queries/movies_afisha.xq</file>
 	<file>queries/movie.xq</file>
 	<file>queries/geocoder.xq</file>
 	<file>map.html</file>

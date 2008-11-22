@@ -6,6 +6,7 @@
 namespace AfishaHelpers {
 	QString host();
 	QString currentDate();
+	QString currentDateForAfisha();
 
 	QString cinemaCacheDate();
 };

@@ -10,6 +10,8 @@
 #include "afishahelpers.h"
 #include "movie.h"
 
+#define INIT_FROM_AFISHA
+
 Movies::Movies()
 	: QObject()
 {
@@ -35,14 +37,25 @@ Movie* Movies::findMovie(const QString& id) const
 
 void Movies::initFromWeb()
 {
+	QString id = QString("%1_movies").arg(AfishaHelpers::currentDate());
+#ifdef INIT_FROM_AFISHA
+	id += "_afisha";
+#endif
+
 	if (request_)
 		delete request_;
-	request_ = new HttpRequest(QString("%1_movies").arg(AfishaHelpers::currentDate()), this);
+	request_ = new HttpRequest(id, this);
 	connect(request_, SIGNAL(finished()), SLOT(requestFinished()));
+#ifdef INIT_FROM_AFISHA
+	request_->request(":queries/movies_afisha.xq",
+	                  QString("http://www.afisha.ru/msk/schedule_cinema/%1/")
+	                  .arg(AfishaHelpers::currentDateForAfisha()));
+#else
 	request_->request(":queries/movies.xq",
 	                  QString("%1/type.xml?city=MSK&type=cinema&date=%2&")
 	                  .arg(AfishaHelpers::host())
 	                  .arg(AfishaHelpers::currentDate()));
+#endif
 }
 
 void Movies::initFromData(const QString& xml)
