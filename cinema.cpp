@@ -62,7 +62,7 @@ void Cinema::updateFromWeb()
 	request_->request(":queries/cinema.xq",
 	                  QString("%1/place.xml?city=MSK&type=cinema&date=%2&place_id=%3&")
 	                  .arg(AfishaHelpers::host())
-	                  .arg(AfishaHelpers::cinemaCacheDate())
+	                  .arg(AfishaHelpers::currentDate())
 	                  .arg(id_));
 }
 
@@ -154,4 +154,12 @@ void Cinema::clear()
 	phones_ = QStringList();
 	lastUpdatedAt_ = QDateTime::currentDateTime();
 	hasDetailedInfo_ = false;
+}
+
+QString Cinema::detailsLinkForId(const QString& id)
+{
+	return QString("%1/place.xml?city=MSK&type=cinema&date=%2&place_id=%3&")
+	             .arg(AfishaHelpers::host())
+	             .arg(AfishaHelpers::currentDate())
+	             .arg(id);
 }

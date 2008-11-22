@@ -121,6 +121,7 @@ void CinemaList::saveCache()
 	qWarning("CinemaList::saveCache()");
 	QDomDocument doc;
 	QDomElement root = doc.createElement("cinemas");
+	root.setAttribute("detailed", "true");
 	root.setAttribute("lastUpdatedAt", QDateTime::currentDateTime().toString(Qt::ISODate));
 	doc.appendChild(root);
 

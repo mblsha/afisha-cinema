@@ -127,7 +127,21 @@ void MainWindow::cinemasSelectionChanged()
 	foreach(QListWidgetItem* item, ui_.cinemas->selectedItems()) {
 		Cinema* cinema = cinemas_->findCinema(item->data(Qt::UserRole).toString());
 		if (cinema) {
-			ui_.webView->addPlace(cinema->ll(), cinema->name());
+			QStringList times;
+			if (movie_) {
+				QStringList timesForCinema = movie_->timesForCinema(cinema->id());
+				foreach(QListWidgetItem* item, ui_.times->selectedItems()) {
+					QString t = item->data(Qt::UserRole).toString();
+					if (timesForCinema.contains(t))
+						times << t;
+				}
+			}
+
+			QString html = QString("<a href=\"%1\">%2</a><p>%3</p>")
+			               .arg(Cinema::detailsLinkForId(cinema->id()))
+			               .arg(cinema->name())
+			               .arg(times.join(" "));
+			ui_.webView->addPlace(cinema->ll(), html);
 		}
 	}
 }

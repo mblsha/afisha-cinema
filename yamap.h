@@ -15,7 +15,8 @@ public:
 	void clearPlaces();
 	void addPlace(const QString& ll, const QString description);
 
-private:
+private slots:
+	void linkClicked(const QUrl& url);
 };
 
 #endif

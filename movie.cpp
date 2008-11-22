@@ -62,6 +62,14 @@ QStringList Movie::times() const
 	return sortTimes(result);
 }
 
+QStringList Movie::timesForCinema(const QString& cinemaId)
+{
+	if (cinemas_.contains(cinemaId)) {
+		return cinemas_[cinemaId];
+	}
+	return QStringList();
+}
+
 QMap<QString, QStringList> Movie::cinemasForTimes(const QStringList& _times)
 {
 	QStringList times = sortTimes(_times);

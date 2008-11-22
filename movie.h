@@ -23,6 +23,7 @@ public:
 
 	QStringList times() const;
 	QMap<QString, QStringList> cinemasForTimes(const QStringList& times);
+	QStringList timesForCinema(const QString& cinemaId);
 
 	void initFromData(const QString& xml);
 	void initFromXml(const QDomElement& element);

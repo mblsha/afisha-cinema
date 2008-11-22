@@ -33,6 +33,8 @@ public:
 
 	void clear();
 
+	static QString detailsLinkForId(const QString& id);
+
 signals:
 	void dataChanged();
 
