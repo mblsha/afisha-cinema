@@ -19,6 +19,7 @@ public:
 	QList<Movie*> movies() const;
 	Movie* findMovie(const QString& id) const;
 
+	void init();
 	void initFromWeb();
 	void initFromData(const QString& xml);
 

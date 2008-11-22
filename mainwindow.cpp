@@ -21,12 +21,12 @@ MainWindow::MainWindow()
 	connect(ui_.cinemas, SIGNAL(itemSelectionChanged()), SLOT(cinemasSelectionChanged()));
 
 	cinemas_ = new CinemaList();
-	QTimer::singleShot(100, cinemas_, SLOT(initFromWeb()));
-	// cinemas_->initFromWeb();
+	QTimer::singleShot(100, cinemas_, SLOT(init()));
+	// cinemas_->init();
 
 	movies_ = new Movies();
 	connect(movies_, SIGNAL(dataChanged()), SLOT(moviesChanged()));
-	movies_->initFromWeb();
+	movies_->init();
 }
 
 MainWindow::~MainWindow()

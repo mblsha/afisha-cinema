@@ -35,6 +35,11 @@ Movie* Movies::findMovie(const QString& id) const
 	return 0;
 }
 
+void Movies::init()
+{
+	initFromWeb();
+}
+
 void Movies::initFromWeb()
 {
 	QString id = QString("%1_movies").arg(AfishaHelpers::currentDate());

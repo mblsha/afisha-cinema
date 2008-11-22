@@ -11,6 +11,7 @@
 
 Cinema::Cinema()
 	: QObject()
+	, hasDetailedInfo_(false)
 {
 }
 
@@ -41,6 +42,11 @@ QString Cinema::metro() const
 QString Cinema::ll() const
 {
 	return ll_;
+}
+
+bool Cinema::hasDetailedInfo() const
+{
+	return hasDetailedInfo_;
 }
 
 void Cinema::updateFromWeb()
@@ -77,6 +83,7 @@ void Cinema::requestFinished()
 			Geocoder* geocoder = dynamic_cast<Geocoder*>(request_.data());
 			if (geocoder) {
 				ll_ = geocoder->ll();
+				emit dataChanged();
 			}
 		}
 	}
@@ -91,6 +98,20 @@ void Cinema::initFromData(const QString& xml)
 	initFromXml(doc.documentElement());
 }
 
+QDomElement Cinema::toXml(QDomDocument* doc) const
+{
+	QDomElement e = doc->createElement("cinema");
+	e.setAttribute("detailed", "true");
+	e.setAttribute("lastUpdatedAt", lastUpdatedAt_.toString(Qt::ISODate));
+	e.appendChild(XMLHelper::textTag(*doc, "id", id_));
+	e.appendChild(XMLHelper::textTag(*doc, "name", name_));
+	e.appendChild(XMLHelper::textTag(*doc, "address", address_));
+	e.appendChild(XMLHelper::textTag(*doc, "metro", metro_));
+	e.appendChild(XMLHelper::textTag(*doc, "details", details_));
+	e.appendChild(XMLHelper::textTag(*doc, "ll", ll_));
+	return e;
+}
+
 void Cinema::initFromXml(const QDomElement& e)
 {
 	Q_ASSERT(e.tagName() == "cinema");
@@ -101,9 +122,12 @@ void Cinema::initFromXml(const QDomElement& e)
 	address_ = XMLHelper::subTagText(e, "address");
 	metro_ = XMLHelper::subTagText(e, "metro");
 	details_ = XMLHelper::subTagText(e, "details");
+	ll_ = XMLHelper::subTagText(e, "ll");
 
 	if (!e.attribute("detailed").isEmpty()) {
-		if (!address_.isEmpty() /*&& id_ == "2825"*/) {
+		hasDetailedInfo_ = true;
+
+		if (!address_.isEmpty() && ll_.isEmpty() && !XMLHelper::hasSubTag(e, "ll")) {
 			Geocoder* geocoder = new Geocoder(QString("%1_geocoder_%2")
 			                                  .arg(AfishaHelpers::cinemaCacheDate())
 			                                  .arg(id_), this);
@@ -114,6 +138,8 @@ void Cinema::initFromXml(const QDomElement& e)
 		// if (!details_.isEmpty())
 			// qWarning() << id_ << name_ << address_ << metro_;
 	}
+
+	emit dataChanged();
 }
 
 void Cinema::clear()
@@ -127,4 +153,5 @@ void Cinema::clear()
 	mapUrl_ = QString();
 	phones_ = QStringList();
 	lastUpdatedAt_ = QDateTime::currentDateTime();
+	hasDetailedInfo_ = false;
 }

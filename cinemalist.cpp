@@ -4,6 +4,8 @@
 #include <QtAlgorithms>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QTimer>
+#include <QFile>
 
 #include "xmpp_xmlcommon.h"
 #include "httprequest.h"
@@ -12,7 +14,12 @@
 
 CinemaList::CinemaList()
 	: QObject()
+	, saveCacheTimer_(0)
 {
+	saveCacheTimer_ = new QTimer(this);
+	saveCacheTimer_->setInterval(5000);
+	saveCacheTimer_->setSingleShot(true);
+	connect(saveCacheTimer_, SIGNAL(timeout()), SLOT(saveCache()));
 }
 
 CinemaList::~CinemaList()
@@ -26,6 +33,19 @@ Cinema* CinemaList::findCinema(const QString& id) const
 			return cinema;
 	}
 	return 0;
+}
+
+void CinemaList::init()
+{
+	if (QFile::exists(cacheFileName())) {
+		QFile file(cacheFileName());
+		if (file.open(QFile::ReadOnly)) {
+			initFromData(QString::fromUtf8(file.readAll()), true);
+			return;
+		}
+	}
+
+	initFromWeb();
 }
 
 void CinemaList::initFromWeb()
@@ -46,13 +66,13 @@ void CinemaList::requestFinished()
 		return;
 
 	if (!request_->error()) {
-		initFromData(request_->result());
+		initFromData(request_->result(), false);
 	}
 
 	delete request_;
 }
 
-void CinemaList::initFromData(const QString& xml)
+void CinemaList::initFromData(const QString& xml, bool fromCache)
 {
 	qDeleteAll(cinemas_);
 	cinemas_.clear();
@@ -73,11 +93,44 @@ void CinemaList::initFromData(const QString& xml)
 
 		if (e.tagName() == "cinema") {
 			Cinema* cinema = new Cinema();
+			connect(cinema, SIGNAL(dataChanged()), SLOT(cinemaDataChanged()));
 			cinema->initFromXml(e);
-			cinema->updateFromWeb();
+			if (!cinema->hasDetailedInfo()) {
+				cinema->updateFromWeb();
+			}
 			cinemas_ << cinema;
 		}
 	}
 
+	cinemaDataChanged();
 	emit dataChanged();
+}
+
+QString CinemaList::cacheFileName() const
+{
+	return QString("cache/cinemas.xml");
+}
+
+void CinemaList::cinemaDataChanged()
+{
+	saveCacheTimer_->start();
+}
+
+void CinemaList::saveCache()
+{
+	qWarning("CinemaList::saveCache()");
+	QDomDocument doc;
+	QDomElement root = doc.createElement("cinemas");
+	root.setAttribute("lastUpdatedAt", QDateTime::currentDateTime().toString(Qt::ISODate));
+	doc.appendChild(root);
+
+	foreach(Cinema* cinema, cinemas_) {
+		QDomElement e = cinema->toXml(&doc);
+		root.appendChild(e);
+	}
+
+	QFile file(cacheFileName());
+	if (file.open(QFile::WriteOnly)) {
+		file.write(doc.toByteArray(2));
+	}
 }

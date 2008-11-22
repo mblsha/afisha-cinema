@@ -8,6 +8,7 @@
 #include <QPointer>
 
 class QDomElement;
+class QDomDocument;
 class HttpRequest;
 
 class Cinema : public QObject
@@ -22,12 +23,18 @@ public:
 	QString address() const;
 	QString metro() const;
 	QString ll() const;
+	bool hasDetailedInfo() const;
 
 	void initFromData(const QString& xml);
 	void initFromXml(const QDomElement& element);
 	void updateFromWeb();
 
+	QDomElement toXml(QDomDocument* doc) const;
+
 	void clear();
+
+signals:
+	void dataChanged();
 
 private slots:
 	void requestFinished();
@@ -42,6 +49,7 @@ private:
 	QString mapUrl_;
 	QStringList phones_;
 	QDateTime lastUpdatedAt_;
+	bool hasDetailedInfo_;
 
 	QPointer<HttpRequest> request_;
 };
