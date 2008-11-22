@@ -15,8 +15,8 @@ YaMap::~YaMap()
 
 void YaMap::clearPlaces()
 {
-	// QWebFrame* frame = page()->mainFrame();
-	// frame->evaluateJavaScript(QString("clearPlaces();"));
+	QWebFrame* frame = page()->mainFrame();
+	frame->evaluateJavaScript(QString("clearPlaces();"));
 }
 
 void YaMap::addPlace(const QString& ll, const QString description)

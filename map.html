@@ -9,7 +9,7 @@
 
 	<script type="text/javascript"><!--
 	var map;
-	var ml;
+	var places = new Array();
 	function initMap() {
 		map = new YMaps.Map(document.getElementById("YMapsID"));
 		map.addControl(new YMaps.TypeControl());
@@ -21,16 +21,13 @@
 	function init(long, lat) {
 		map.setCenter(new YMaps.GeoPoint(long, lat), 16);
 		map.setZoom(12);
-
-		// ml = new YMaps.YMapsML( 'http://company.yandex.ru/inside/address.xml' );
-		// map.addOverlay(ml);
-
-		// YMaps.Events.observe(ml, ml.Events.Fault, function (error) {
-		//     alert('Ошибка' + error);
-		// });
 	};
 
 	function clearPlaces() {
+		while (places.length > 0) {
+			var placemark = places.pop();
+			map.removeOverlay(placemark);
+		}
 	}
 
 	function addPlace(long, lat, text) {
@@ -38,6 +35,7 @@
 		var placemark = new YMaps.Placemark(point);
 		placemark.description = text;
 		map.addOverlay(placemark);
+		places.push(placemark);
 	}
 	//--></script>
 </head>
@@ -47,7 +45,8 @@
 	<script type="text/javascript"><!--
 	initMap();
 	init('37.609281', '55.753635');
-	addPlace('37.678514', '55.758255', 'Пыщ пыщ риальни');
+	// addPlace('37.678514', '55.758255', ':-)');
+	// clearPlaces();
 	// init('37.678514', '55.758255');
 	//--></script>
 </body>
