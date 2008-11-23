@@ -6,6 +6,7 @@ RESOURCES = queries.qrc
 OBJECTS_DIR = _build
 MOC_DIR = _build
 UI_DIR = _build
+RCC_DIR = _build
 
 INTERFACES += \
 	mainwindow.ui
