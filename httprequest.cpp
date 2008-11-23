@@ -28,6 +28,7 @@
 #include <QCoreApplication>
 
 #include "httphelpers.h"
+#include "afishahelpers.h"
 
 //----------------------------------------------------------------------------
 // HttpRequestQueue
@@ -195,7 +196,9 @@ void HttpRequest::delayedFinished()
 
 QString HttpRequest::cacheFileName() const
 {
-	return QString("cache/%1.data").arg(id_);
+	return QString("%1/%2.data")
+	       .arg(AfishaHelpers::cacheDir())
+	       .arg(id_);
 }
 
 void HttpRequest::processData(const QByteArray& data)
@@ -203,7 +206,9 @@ void HttpRequest::processData(const QByteArray& data)
 	result_ = HttpHelpers::xmlQueryHtmlResult(queryFileName_, data);
 	QTimer::singleShot(0, this, SLOT(delayedFinished()));
 
-	QFile file(QString("cache/%1.xml").arg(id_));
+	QFile file(QString("%1/%2.xml")
+	           .arg(AfishaHelpers::cacheDir())
+	           .arg(id_));
 	if (file.open(QFile::WriteOnly)) {
 		QString html = HttpHelpers::ensureUnicodeHtml(data);
 		html = HttpHelpers::htmlToXml(html);

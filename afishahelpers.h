@@ -24,6 +24,9 @@
 #include <QString>
 
 namespace AfishaHelpers {
+	QString homeDir();
+	QString cacheDir();
+
 	QString host();
 	QString currentDate();
 	QString currentDateForAfisha();

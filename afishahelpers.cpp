@@ -21,6 +21,60 @@
 #include "afishahelpers.h"
 
 #include <QDateTime>
+#include <QDir>
+
+#if defined(Q_WS_X11) or defined(Q_WS_MAC)
+#include <sys/stat.h> // chmod
+#endif
+
+// ripped from yapsi
+QString AfishaHelpers::homeDir()
+{
+	// Try the environment override first
+	char *p = getenv("AFISHACINEMADATADIR");
+	if (p) {
+		QDir proghome(p);
+		if (!proghome.exists()) {
+			QDir d;
+			d.mkpath(proghome.path());
+		}
+		return proghome.path();
+	}
+
+#if defined(Q_WS_X11) || defined(Q_WS_MAC)
+	QDir proghome(QDir::homePath() + "/.afisha-cinema");
+	if (!proghome.exists()) {
+		QDir home = QDir::home();
+		home.mkdir(".afisha-cinema");
+		chmod(QFile::encodeName(proghome.path()), 0700);
+	}
+	return proghome.path();
+#elif defined(Q_WS_WIN)
+	QString base = QDir::homePath();
+	WCHAR str[MAX_PATH+1] = { 0 };
+	if (SHGetSpecialFolderPathW(0, str, CSIDL_APPDATA, true))
+		base = QString::fromWCharArray(str);
+
+	QDir proghome(base + "/AfishaCinemaData");
+	if (!proghome.exists()) {
+		QDir home(base);
+		home.mkdir("AfishaCinemaData");
+	}
+
+	return proghome.path();
+#endif
+}
+
+QString AfishaHelpers::cacheDir()
+{
+	QString dir(homeDir() + "/cache");
+	QDir d(dir);
+	if (!d.exists()) {
+		QDir d(homeDir());
+		d.mkdir("cache");
+	}
+	return dir;
+}
 
 QString AfishaHelpers::host()
 {

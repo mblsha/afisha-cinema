@@ -128,7 +128,8 @@ void CinemaList::initFromData(const QString& xml, bool fromCache)
 
 QString CinemaList::cacheFileName() const
 {
-	return QString("cache/cinemas.xml");
+	return QString("%1/cinemas.xml")
+	       .arg(AfishaHelpers::cacheDir());
 }
 
 void CinemaList::cinemaDataChanged()
