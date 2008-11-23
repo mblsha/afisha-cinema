@@ -3,6 +3,10 @@ CONFIG += qt
 QT += gui network xml xmlpatterns webkit
 RESOURCES = queries.qrc
 
+OBJECTS_DIR = _build
+MOC_DIR = _build
+UI_DIR = _build
+
 INTERFACES += \
 	mainwindow.ui
 
