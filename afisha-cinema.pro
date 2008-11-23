@@ -3,11 +3,6 @@ CONFIG += qt
 QT += gui network xml xmlpatterns webkit
 RESOURCES = queries.qrc
 
-OBJECTS_DIR = _build
-MOC_DIR = _build
-UI_DIR = _build
-RCC_DIR = _build
-
 INTERFACES += \
 	mainwindow.ui
 
@@ -38,6 +33,15 @@ HEADERS += \
 	geocoder.h \
 	yamap.h
 
-HEADERS += $$PWD/iris-chunks/xmpp_xmlcommon.h
-SOURCES += $$PWD/iris-chunks/xmpp_xmlcommon.cpp
-INCLUDEPATH += $$PWD/iris-chunks
+include($$PWD/iris-chunks/iris-chunks.pri)
+
+UNITTEST_PRI = $$PWD/../psi/qa/oldtest/unittest.pri
+exists($$UNITTEST_PRI) {
+	include($$UNITTEST_PRI)
+}
+else {
+	OBJECTS_DIR = _build
+	MOC_DIR = _build
+	UI_DIR = _build
+	RCC_DIR = _build
+}
