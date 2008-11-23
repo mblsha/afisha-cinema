@@ -69,7 +69,6 @@ XDomNodeList childElementsByTagNameNS(const QDomElement &e, const QString &nsURI
 QDomElement createIQ(QDomDocument *doc, const QString &type, const QString &to, const QString &id);
 QDomElement queryTag(const QDomElement &e);
 QString queryNS(const QDomElement &e);
-void getErrorFromElement(const QDomElement &e, const QString &baseNS, int *code, QString *str);
 QDomElement addCorrectNS(const QDomElement &e);
 
 namespace XMLHelper {

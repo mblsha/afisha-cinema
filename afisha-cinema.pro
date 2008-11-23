@@ -38,12 +38,6 @@ HEADERS += \
 	geocoder.h \
 	yamap.h
 
-DEFINES += NO_XMPP_STANZA
-HEADERS += \
-	../psi/iris/include/iris/xmpp_xmlcommon.h
-SOURCES += \
-	../psi/iris/src/xmpp/xmpp-im/xmpp_xmlcommon.cpp
-INCLUDEPATH += ../psi/iris/include/iris
-DEPENDPATH  += ../psi/iris/include/iris
-
-include(../psi/qa/oldtest/unittest.pri)
+HEADERS += $$PWD/iris-chunks/xmpp_xmlcommon.h
+SOURCES += $$PWD/iris-chunks/xmpp_xmlcommon.cpp
+INCLUDEPATH += $$PWD/iris-chunks
