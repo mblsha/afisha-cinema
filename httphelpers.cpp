@@ -41,7 +41,7 @@ int HttpHelpers::httpGet(QHttp* http, const QString& urlString)
 		fullUri += "?" + query;
 	}
 
-	qWarning("fullUri = '%s'", qPrintable(fullUri));
+	// qWarning("fullUri = '%s'", qPrintable(fullUri));
 	QHttpRequestHeader header("GET", fullUri);
 	header.setValue("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_5; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1");
 	header.setValue("Host", url.port() == -1 ? url.host() : QString("%1:%2").arg(url.host(), url.port()));

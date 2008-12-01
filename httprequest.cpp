@@ -159,8 +159,7 @@ void HttpRequest::request(const QString& queryFileName, const QString& url)
 
 void HttpRequest::start()
 {
-	qWarning("whoops, unable to fetch from cache: %s", qPrintable(cacheFileName()));
-	qWarning("url = '%s'", qPrintable(url_));
+	qWarning("HttpRequest::start(): '%s' (%s)", qPrintable(url_), qPrintable(cacheFileName()));
 	httpRequestId_ = HttpHelpers::httpGet(http_, url_);
 }
 
