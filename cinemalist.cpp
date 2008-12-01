@@ -77,7 +77,7 @@ void CinemaList::initFromWeb()
 	request_->request(":queries/cinemas.xq",
 	                  QString("%1/chooser_place.xml?city=MSK&type=cinema&date=%2&")
 	                  .arg(AfishaHelpers::host())
-	                  .arg(AfishaHelpers::cinemaCacheDate()));
+	                  .arg(AfishaHelpers::currentDate()));
 }
 
 void CinemaList::requestFinished()
@@ -105,6 +105,13 @@ void CinemaList::initFromData(const QString& xml, bool fromCache)
 	Q_ASSERT(root.tagName() == "cinemas");
 	if (root.tagName() != "cinemas")
 		return;
+
+	if (root.attribute("cached") == "true") {
+		if (!root.hasAttribute("numCinemas") || !root.attribute("numCinemas").toInt()) {
+			initFromWeb();
+			return;
+		}
+	}
 
 	for (QDomNode n = root.firstChild(); !n.isNull(); n = n.nextSibling()) {
 		QDomElement e = n.toElement();
@@ -142,8 +149,9 @@ void CinemaList::saveCache()
 	qWarning("CinemaList::saveCache()");
 	QDomDocument doc;
 	QDomElement root = doc.createElement("cinemas");
-	root.setAttribute("detailed", "true");
+	root.setAttribute("cached", "true");
 	root.setAttribute("lastUpdatedAt", QDateTime::currentDateTime().toString(Qt::ISODate));
+	root.setAttribute("numCinemas", QString::number(cinemas_.count()));
 	doc.appendChild(root);
 
 	foreach(Cinema* cinema, cinemas_) {
