@@ -34,14 +34,4 @@ HEADERS += \
 	yamap.h
 
 include($$PWD/iris-chunks/iris-chunks.pri)
-
-UNITTEST_PRI = $$PWD/../psi/qa/oldtest/unittest.pri
-exists($$UNITTEST_PRI) {
-	include($$UNITTEST_PRI)
-}
-else {
-	OBJECTS_DIR = _build
-	MOC_DIR = _build
-	UI_DIR = _build
-	RCC_DIR = _build
-}
+include($$PWD/unittest.pri)
