@@ -24,6 +24,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QMapIterator>
+#include <QRegExp>
 
 #include "xmpp_xmlcommon.h"
 #include "httprequest.h"
@@ -144,7 +145,11 @@ void Movie::initFromXml(const QDomElement& e)
 					continue;
 
 				if (eee.tagName() == "time") {
-					times << eee.text();
+					// protection against 'Расписание сеансов появится позднее'
+					QRegExp timeRegExp("^\\d\\d:\\d\\d$");
+					if (timeRegExp.exactMatch(eee.text())) {
+						times << eee.text();
+					}
 				}
 			}
 
