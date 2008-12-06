@@ -1,5 +1,5 @@
 /*
- * cinemalist.h
+ * cinemaprogress.h
  * Copyright (C) 2008  Michail Pishchagin
  *
  * This program is free software; you can redistribute it and/or
@@ -18,56 +18,33 @@
  *
  */
 
-#ifndef CINEMALIST_H
-#define CINEMALIST_H
+#ifndef CINEMAPROGRESS_H
+#define CINEMAPROGRESS_H
 
 #include <QObject>
-
-#include <QList>
 #include <QPointer>
 
-class HttpRequest;
-class Cinema;
+class CinemaList;
+
+class QProgressDialog;
 class QTimer;
 
-class CinemaList : public QObject
+class CinemaProgress : QObject
 {
 	Q_OBJECT
 public:
-	CinemaList();
-	~CinemaList();
-
-	Cinema* findCinema(const QString& id) const;
-
-	bool canInitFromWeb() const;
-	void setCanInitFromWeb(bool canInitFromWeb);
-
-	int fullProgress() const;
-	int finishedProgress() const;
-
-public slots:
-	void init();
-	void initFromWeb();
-	void initFromData(const QString& xml, bool fromCache);
-	void saveCache();
-
-signals:
-	void dataChanged();
-	void progressChanged();
+	CinemaProgress();
+	~CinemaProgress();
 
 private slots:
-	void requestFinished();
-	void cinemaDataChanged();
+	void progressChanged();
+	void cancel();
+	void startApp();
 
 private:
-	bool canInitFromWeb_;
-	QList<Cinema*> cinemas_;
-	QPointer<HttpRequest> request_;
-	QTimer* saveCacheTimer_;
-	int finishedProgress_;
-	int fullProgress_;
-
-	QString cacheFileName() const;
+	QProgressDialog* progress_;
+	CinemaList* cinemas_;
+	QTimer* startAppTimer_;
 };
 
 #endif

@@ -18,7 +18,8 @@ SOURCES += \
 	mainwindow.cpp \
 	yamapsapi.cpp \
 	geocoder.cpp \
-	yamap.cpp
+	yamap.cpp \
+	cinemaprogress.cpp
 
 HEADERS += \
 	cinema.h \
@@ -31,7 +32,8 @@ HEADERS += \
 	mainwindow.h \
 	yamapsapi.h \
 	geocoder.h \
-	yamap.h
+	yamap.h \
+	cinemaprogress.h
 
 include($$PWD/iris-chunks/iris-chunks.pri)
 include($$PWD/unittest.pri)

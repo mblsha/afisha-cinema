@@ -158,10 +158,10 @@ void Cinema::initFromXml(const QDomElement& e)
 			connect(geocoder, SIGNAL(finished()), SLOT(requestFinished()));
 			geocoder->request(address_);
 		}
-
-		if (!ll_.isEmpty()) {
+		else {
 			finishedProgress_ = 100;
 		}
+
 		// if (!details_.isEmpty())
 			// qWarning() << id_ << name_ << address_ << metro_;
 	}

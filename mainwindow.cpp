@@ -41,6 +41,7 @@ MainWindow::MainWindow()
 	connect(ui_.cinemas, SIGNAL(itemSelectionChanged()), SLOT(cinemasSelectionChanged()));
 
 	cinemas_ = new CinemaList();
+	cinemas_->setCanInitFromWeb(false);
 	QTimer::singleShot(100, cinemas_, SLOT(init()));
 	// cinemas_->init();
 

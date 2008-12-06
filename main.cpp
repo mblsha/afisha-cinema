@@ -24,6 +24,7 @@
 #include "cinemalist.h"
 #include "movies.h"
 #include "mainwindow.h"
+#include "cinemaprogress.h"
 
 int main (int argc, char *argv[])
 {
@@ -35,10 +36,12 @@ int main (int argc, char *argv[])
 	// Movies movies;
 	// movies.initFromWeb();
 
-	MainWindow mw;
-	mw.show();
-	mw.raise();
-	mw.activateWindow();
+	// MainWindow mw;
+	// mw.show();
+	// mw.raise();
+	// mw.activateWindow();
+
+	CinemaProgress* cinemaProgress = new CinemaProgress();
 
 	// QTimer::singleShot(1000, &app, SLOT(quit()));
 	return app.exec();

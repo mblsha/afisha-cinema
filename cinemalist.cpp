@@ -158,9 +158,16 @@ void CinemaList::cinemaDataChanged()
 
 	emit progressChanged();
 	saveCacheTimer_->start();
-	if (fullProgress_ > 0 && finishedProgress_ >= fullProgress_) {
-		saveCache();
-	}
+}
+
+int CinemaList::fullProgress() const
+{
+	return fullProgress_;
+}
+
+int CinemaList::finishedProgress() const
+{
+	return finishedProgress_;
 }
 
 void CinemaList::saveCache()
