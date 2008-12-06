@@ -23,6 +23,15 @@
 #include <QDateTime>
 #include <QDir>
 
+#if defined(Q_WS_WIN)
+#if __GNUC__ >= 3
+#	define WINVER    0x0500
+#	define _WIN32_IE 0x0500
+#endif
+#include <windows.h>
+#include <shlobj.h>
+#endif
+
 #if defined(Q_WS_X11) or defined(Q_WS_MAC)
 #include <sys/stat.h> // chmod
 #endif

@@ -1,5 +1,6 @@
 .DS_Store
 Makefile
+Makefile.*
 *.app
 .obj
 .moc
@@ -10,3 +11,10 @@ moc_*.cpp
 *.moc
 qrc_*.cpp
 ui_*.h
+
+._*
+*.exe
+*.pdb
+*.idb
+/_obj
+/debug
