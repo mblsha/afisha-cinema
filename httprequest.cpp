@@ -107,6 +107,7 @@ HttpRequest::HttpRequest(QString id, QObject* parent)
 	, error_(false)
 	, http_(0)
 	, httpRequestId_(-1)
+	, finishedRequest_(false)
 {
 	http_ = new QHttp(this);
 	connect(http_, SIGNAL(requestFinished(int, bool)), this, SLOT(httpRequestFinished(int, bool)));
@@ -202,6 +203,7 @@ QString HttpRequest::cacheFileName() const
 
 void HttpRequest::processData(const QByteArray& data)
 {
+	finishedRequest_ = true;
 	result_ = HttpHelpers::xmlQueryHtmlResult(queryFileName_, data);
 	QTimer::singleShot(0, this, SLOT(delayedFinished()));
 
@@ -214,6 +216,11 @@ void HttpRequest::processData(const QByteArray& data)
 
 		file.write(html.toUtf8());
 	}
+}
+
+bool HttpRequest::finishedRequest() const
+{
+	return finishedRequest_;
 }
 
 #include "httprequest.moc"

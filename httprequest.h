@@ -32,6 +32,8 @@ public:
 	HttpRequest(QString id, QObject* parent = 0);
 	~HttpRequest();
 
+	bool finishedRequest() const;
+
 	QString type() const;
 	void setType(const QString& type);
 
@@ -60,6 +62,7 @@ private:
 	int httpRequestId_;
 	QString url_;
 	QString result_;
+	bool finishedRequest_;
 
 	QString cacheFileName() const;
 	void processData(const QByteArray& data);

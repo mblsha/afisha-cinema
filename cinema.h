@@ -38,6 +38,9 @@ public:
 	Cinema();
 	~Cinema();
 
+	int fullProgress() const;
+	int finishedProgress() const;
+
 	QString name() const;
 	QString id() const;
 	QString address() const;
@@ -72,6 +75,7 @@ private:
 	QStringList phones_;
 	QDateTime lastUpdatedAt_;
 	bool hasDetailedInfo_;
+	int finishedProgress_;
 
 	QPointer<HttpRequest> request_;
 };

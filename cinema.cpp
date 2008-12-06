@@ -32,6 +32,7 @@
 Cinema::Cinema()
 	: QObject()
 	, hasDetailedInfo_(false)
+	, finishedProgress_(0)
 {
 }
 
@@ -103,6 +104,7 @@ void Cinema::requestFinished()
 			Geocoder* geocoder = dynamic_cast<Geocoder*>(request_.data());
 			if (geocoder) {
 				ll_ = geocoder->ll();
+				finishedProgress_ = 100;
 				emit dataChanged();
 			}
 		}
@@ -146,6 +148,7 @@ void Cinema::initFromXml(const QDomElement& e)
 
 	if (!e.attribute("detailed").isEmpty()) {
 		hasDetailedInfo_ = true;
+		finishedProgress_ = 50;
 
 		if (!address_.isEmpty() && ll_.isEmpty() && !XMLHelper::hasSubTag(e, "ll")) {
 			Geocoder* geocoder = new Geocoder(QString("%1_geocoder_%2")
@@ -154,6 +157,10 @@ void Cinema::initFromXml(const QDomElement& e)
 			request_ = geocoder;
 			connect(geocoder, SIGNAL(finished()), SLOT(requestFinished()));
 			geocoder->request(address_);
+		}
+
+		if (!ll_.isEmpty()) {
+			finishedProgress_ = 100;
 		}
 		// if (!details_.isEmpty())
 			// qWarning() << id_ << name_ << address_ << metro_;
@@ -182,4 +189,14 @@ QString Cinema::detailsLinkForId(const QString& id)
 	             .arg(AfishaHelpers::host())
 	             .arg(AfishaHelpers::currentDate())
 	             .arg(id);
+}
+
+int Cinema::finishedProgress() const
+{
+	return finishedProgress_;
+}
+
+int Cinema::fullProgress() const
+{
+	return 100;
 }

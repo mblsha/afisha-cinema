@@ -39,6 +39,12 @@ public:
 
 	Cinema* findCinema(const QString& id) const;
 
+	bool canInitFromWeb() const;
+	void setCanInitFromWeb(bool canInitFromWeb);
+
+	int fullProgress() const;
+	int finishedProgress() const;
+
 public slots:
 	void init();
 	void initFromWeb();
@@ -46,6 +52,7 @@ public slots:
 
 signals:
 	void dataChanged();
+	void progressChanged();
 
 private slots:
 	void requestFinished();
@@ -53,9 +60,12 @@ private slots:
 	void saveCache();
 
 private:
+	bool canInitFromWeb_;
 	QList<Cinema*> cinemas_;
 	QPointer<HttpRequest> request_;
 	QTimer* saveCacheTimer_;
+	int finishedProgress_;
+	int fullProgress_;
 
 	QString cacheFileName() const;
 };

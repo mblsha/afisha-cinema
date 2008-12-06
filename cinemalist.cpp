@@ -34,7 +34,10 @@
 
 CinemaList::CinemaList()
 	: QObject()
+	, canInitFromWeb_(true)
 	, saveCacheTimer_(0)
+	, finishedProgress_(0)
+	, fullProgress_(0)
 {
 	saveCacheTimer_ = new QTimer(this);
 	saveCacheTimer_->setInterval(5000);
@@ -70,6 +73,11 @@ void CinemaList::init()
 
 void CinemaList::initFromWeb()
 {
+	if (!canInitFromWeb_) {
+		qWarning("CinemaList::initFromWeb(): disabled");
+		return;
+	}
+
 	if (request_)
 		delete request_;
 	request_ = new HttpRequest(QString("%1_cinemas").arg(AfishaHelpers::cinemaCacheDate()), this);
@@ -141,7 +149,18 @@ QString CinemaList::cacheFileName() const
 
 void CinemaList::cinemaDataChanged()
 {
+	finishedProgress_ = 0;
+	fullProgress_ = 0;
+	foreach(Cinema* cinema, cinemas_) {
+		finishedProgress_ += cinema->finishedProgress();
+		fullProgress_ += cinema->fullProgress();
+	}
+
+	emit progressChanged();
 	saveCacheTimer_->start();
+	if (fullProgress_ > 0 && finishedProgress_ >= fullProgress_) {
+		saveCache();
+	}
 }
 
 void CinemaList::saveCache()
@@ -163,4 +182,14 @@ void CinemaList::saveCache()
 	if (file.open(QFile::WriteOnly)) {
 		file.write(doc.toByteArray(2));
 	}
+}
+
+bool CinemaList::canInitFromWeb() const
+{
+	return canInitFromWeb_;
+}
+
+void CinemaList::setCanInitFromWeb(bool canInitFromWeb)
+{
+	canInitFromWeb_ = canInitFromWeb;
 }
